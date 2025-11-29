@@ -1,7 +1,7 @@
 """Pydantic schemas for API input/output.
 
-This module defines the schemas used for validating and serializing data
-exchanged with the API.
+This module provides the schemas used for validating and serializing
+data exchanged with the API.
 """
 
 from pydantic import BaseModel, ConfigDict, EmailStr
@@ -12,6 +12,13 @@ class UserCreate(BaseModel):
 
     email: EmailStr
     password: str
+
+
+class UserUpdate(BaseModel):
+    """Request data for updating a user."""
+
+    email: EmailStr | None = None
+    password: str | None = None
 
 
 class UserOut(BaseModel):
@@ -40,6 +47,13 @@ class PostCreate(BaseModel):
 
     title: str
     body: str
+
+
+class PostUpdate(BaseModel):
+    """Request data for updating a post."""
+
+    title: str | None = None
+    body: str | None = None
 
 
 class PostOut(BaseModel):
