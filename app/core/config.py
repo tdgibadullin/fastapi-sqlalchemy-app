@@ -5,6 +5,7 @@ application's configuration settings using a Settings class.
 """
 
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,13 +15,17 @@ class Settings:
     """Application configuration settings.
 
     Attributes:
-        DATABASE_URL (str): The connection string for the PostgreSQL
-            database.
-        SECRET_KEY (str): The secret key used for cryptographic signing.
-        ALGORITHM (str): The algorithm used for JWT token signing.
-        ACCESS_TOKEN_EXPIRE_MINUTES (int): The duration in minutes
-            before an access token expires.
+        DATABASE_URL: The connection string for the PostgreSQL database.
+        SECRET_KEY: The secret key used for cryptographic signing.
+        ALGORITHM: The algorithm used for JWT token signing.
+        ACCESS_TOKEN_EXPIRE_MINUTES: The duration in minutes before an
+            access token expires.
     """
+
+    DATABASE_URL: str
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     def __init__(self):
         """Initializes configuration settings from environment variables.

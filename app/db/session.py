@@ -5,18 +5,19 @@ class for ORM models. It also provides a FastAPI dependency for creating
 and closing database sessions on a per-request basis.
 """
 
+from typing import Generator
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import Session, sessionmaker, declarative_base
 
 from app.core.config import settings
-
 
 engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-def get_db():
+def get_db() -> Generator[Session, None, None]:
     """Yields a SQLAlchemy session and closes it after use."""
     db = SessionLocal()
     try:
