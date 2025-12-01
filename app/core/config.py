@@ -20,15 +20,21 @@ class Settings:
         ALGORITHM: The algorithm used for JWT token signing.
         ACCESS_TOKEN_EXPIRE_MINUTES: The duration in minutes before an
             access token expires.
+        REDIS_URL: Connection string for Redis (used by Celery).
     """
 
     DATABASE_URL: str
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
+    REDIS_URL: str
 
     def __init__(self):
-        """Initializes configuration settings from environment variables.
+        """Initializes configuration settings.
+
+        Settings are derived from environment variables. For
+        non-critical settings, default values are applied where an
+        environment variable is not explicitly set.
 
         Raises:
             ValueError: If the required environment variable
@@ -47,6 +53,8 @@ class Settings:
         self.ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv(
             "ACCESS_TOKEN_EXPIRE_MINUTES", "60")
         )
+
+        self.REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 
 
 settings = Settings()
