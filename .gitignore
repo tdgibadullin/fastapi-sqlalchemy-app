@@ -1,18 +1,18 @@
-# Python bytecode and caches
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*$py.class
 
-# Virtual environments
+# Virtual environment
 .venv/
-venv/
-env/
 
 # Environment variables
 .env
 
-# PyCharm
-.idea/
+# Development tools caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
 
-# macOS
+# IDE & OS
+.idea/
 .DS_Store
