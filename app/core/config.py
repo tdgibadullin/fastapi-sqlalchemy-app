@@ -1,60 +1,37 @@
-"""Configuration settings for the application.
+"""Application configuration.
 
-This module handles loading environment variables and defining the
-application's configuration settings using a Settings class.
+Loaded from environment variables using Pydantic Settings.
 """
 
-import os
-
-from dotenv import load_dotenv
-
-load_dotenv()
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Settings:
-    """Application configuration settings.
+class Settings(BaseSettings):
+    """Configuration for the application.
+
+    For non-critical settings, default values are applied where an
+    environment variable is not explicitly set.
 
     Attributes:
-        DATABASE_URL: The connection string for the PostgreSQL database.
-        SECRET_KEY: The secret key used for cryptographic signing.
-        ALGORITHM: The algorithm used for JWT token signing.
-        ACCESS_TOKEN_EXPIRE_MINUTES: The duration in minutes before an
-            access token expires.
-        REDIS_URL: Connection string for Redis (used by Celery).
+        DATABASE_URL: Connection string for the PostgreSQL database.
+        SECRET_KEY: Secret key for cryptographic signing.
+        ALGORITHM: JWT signing algorithm.
+        ACCESS_TOKEN_EXPIRE_MINUTES: Token TTL.
+        REDIS_URL: Connection string for Redis.
     """
 
     DATABASE_URL: str
     SECRET_KEY: str
-    ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int
-    REDIS_URL: str
 
-    def __init__(self):
-        """Initializes configuration settings.
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    REDIS_URL: str = "redis://redis:6379/0"
 
-        Settings are derived from environment variables. For
-        non-critical settings, default values are applied where an
-        environment variable is not explicitly set.
-
-        Raises:
-            ValueError: If the required environment variable
-                DATABASE_URL or SECRET_KEY is not set.
-        """
-        self.DATABASE_URL = os.getenv("DATABASE_URL")
-        if not self.DATABASE_URL:
-            raise ValueError("DATABASE_URL environment variable must be set")
-
-        self.SECRET_KEY = os.getenv("SECRET_KEY")
-        if not self.SECRET_KEY:
-            raise ValueError("SECRET_KEY environment variable must be set")
-
-        self.ALGORITHM = os.getenv("ALGORITHM", "HS256")
-
-        self.ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv(
-            "ACCESS_TOKEN_EXPIRE_MINUTES", "60")
-        )
-
-        self.REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
 
 settings = Settings()
