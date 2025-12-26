@@ -1,26 +1,35 @@
-"""Database initialization and session management.
+"""Database access layer.
 
 This module initializes the SQLAlchemy engine, session factory, and base
-class for ORM models. It also provides a FastAPI dependency for creating
-and closing database sessions on a per-request basis.
+class for ORM models.
+
+It also defines a FastAPI dependency for per-request database sessions
+via the SessionDep type alias.
 """
 
-from typing import Generator
+from typing import TYPE_CHECKING, Annotated
 
+from fastapi import Depends
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker, declarative_base
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from app.core.config import settings
 
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
 engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 
 
-def get_db() -> Generator[Session, None, None]:
+class Base(DeclarativeBase):
+    """Base class for all SQLAlchemy ORM models."""
+
+
+def get_db() -> Generator[Session]:
     """Yields a SQLAlchemy session and closes it after use."""
-    db = SessionLocal()
-    try:
+    with SessionLocal() as db:
         yield db
-    finally:
-        db.close()
+
+
+SessionDep = Annotated[Session, Depends(get_db)]

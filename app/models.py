@@ -3,13 +3,15 @@
 This module defines the database models used by the application.
 """
 
-from __future__ import annotations
-from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, ForeignKey, func, Text
+from sqlalchemy import DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class User(Base):
@@ -26,11 +28,16 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    email: Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
-    hashed_password: Mapped[str] = mapped_column(nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(254),
+        unique=True,
+        index=True,
+        nullable=False,
+    )
+    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
-    posts: Mapped[list["Post"]] = relationship(back_populates="owner")
+    posts: Mapped[list[Post]] = relationship(back_populates="owner")
 
     def __repr__(self) -> str:
         """Returns a debug string representation of the User object."""
@@ -52,7 +59,7 @@ class Post(Base):
     __tablename__ = "posts"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    title: Mapped[str] = mapped_column(index=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(255), index=True, nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -61,7 +68,7 @@ class Post(Base):
     )
 
     owner_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
-    owner: Mapped["User | None"] = relationship(back_populates="posts")
+    owner: Mapped[User | None] = relationship(back_populates="posts")
 
     def __repr__(self) -> str:
         """Returns a debug string representation of the Post object."""
