@@ -27,17 +27,30 @@ class User(Base):
 
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(
+        primary_key=True,
+        index=True,
+    )
     email: Mapped[str] = mapped_column(
         String(254),
         unique=True,
         index=True,
         nullable=False,
     )
-    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
-    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    hashed_password: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+    )
+    is_active: Mapped[bool] = mapped_column(
+        default=True,
+        nullable=False,
+    )
 
-    posts: Mapped[list[Post]] = relationship(back_populates="owner")
+    posts: Mapped[list[Post]] = relationship(
+        back_populates="owner",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
 
     def __repr__(self) -> str:
         """Returns a debug string representation of the User object."""
@@ -58,17 +71,30 @@ class Post(Base):
 
     __tablename__ = "posts"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    title: Mapped[str] = mapped_column(String(255), index=True, nullable=False)
-    body: Mapped[str] = mapped_column(Text, nullable=False)
+    id: Mapped[int] = mapped_column(
+        primary_key=True,
+        index=True,
+    )
+    title: Mapped[str] = mapped_column(
+        String(255),
+        index=True,
+        nullable=False,
+    )
+    body: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
     )
 
-    owner_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
-    owner: Mapped[User | None] = relationship(back_populates="posts")
+    owner_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        ondelete="CASCADE",
+    )
+    owner: Mapped[User] = relationship(back_populates="posts")
 
     def __repr__(self) -> str:
         """Returns a debug string representation of the Post object."""

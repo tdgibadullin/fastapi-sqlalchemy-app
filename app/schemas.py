@@ -4,67 +4,146 @@ This module provides the schemas used for validating and serializing
 data exchanged with the API.
 """
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from typing import Annotated
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserCreate(BaseModel):
-    """Request data for creating a new user."""
+    """Schema for user creation input.
 
-    email: EmailStr
-    password: str
+    Prohibits providing extra data.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    email: Annotated[
+        EmailStr,
+        Field(
+            max_length=254,
+            examples=["user@example.com"],
+        ),
+    ]
+    password: Annotated[
+        str,
+        Field(
+            min_length=12,
+            max_length=128,
+            examples=["StrongPass123!"],
+        ),
+    ]
 
 
 class UserUpdate(BaseModel):
-    """Request data for updating a user."""
+    """Schema for user update input.
 
-    email: EmailStr | None = None
-    password: str | None = None
+    All fields are optional. Prohibits providing extra data.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    email: Annotated[
+        EmailStr | None,
+        Field(
+            default=None,
+            max_length=254,
+            examples=["new@example.com"],
+        ),
+    ]
+    password: Annotated[
+        str | None,
+        Field(
+            default=None,
+            min_length=12,
+            max_length=128,
+            examples=["NewStrongPass123!"],
+        ),
+    ]
 
 
 class UserOut(BaseModel):
-    """Response data for a user profile.
+    """Schema for user data returned in API responses.
 
-    Excludes sensitive information like hashed passwords. Configured for
-    compatibility with ORM models.
+    Supports retrieving data from ORM objects via attribute access.
     """
+
+    model_config = ConfigDict(from_attributes=True)
 
     id: int
     email: EmailStr
     is_active: bool
 
-    model_config = ConfigDict(from_attributes=True)
-
-
-class Token(BaseModel):
-    """Authentication token payload."""
-
-    access_token: str
-    token_type: str
-
 
 class PostCreate(BaseModel):
-    """Request data for creating a new post."""
+    """Schema for post creation input.
 
-    title: str
-    body: str
+    Prohibits providing extra data.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    title: Annotated[
+        str,
+        Field(
+            min_length=2,
+            max_length=255,
+            examples=["My Post"],
+        ),
+    ]
+    body: Annotated[
+        str,
+        Field(
+            min_length=1,
+            max_length=100000,
+            examples=["This is the content of my post..."],
+        ),
+    ]
 
 
 class PostUpdate(BaseModel):
-    """Request data for updating a post."""
+    """Schema for post update input.
 
-    title: str | None = None
-    body: str | None = None
+    All fields are optional. Prohibits providing extra data.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    title: Annotated[
+        str | None,
+        Field(
+            default=None,
+            min_length=2,
+            max_length=255,
+            examples=["My Updated Post"],
+        ),
+    ]
+    body: Annotated[
+        str | None,
+        Field(
+            default=None,
+            min_length=1,
+            max_length=100000,
+            examples=["This is the updated content of my post..."],
+        ),
+    ]
 
 
 class PostOut(BaseModel):
-    """Response data for a post.
+    """Schema for post data returned in API responses.
 
-    Configured for compatibility with ORM models.
+    Supports retrieving data from ORM objects via attribute access.
     """
+
+    model_config = ConfigDict(from_attributes=True)
 
     id: int
     title: str
     body: str
-    owner_id: int | None = None
+    owner_id: int
 
-    model_config = ConfigDict(from_attributes=True)
+
+class Token(BaseModel):
+    """Schema for auth token data returned in API responses."""
+
+    access_token: str
+    token_type: str
