@@ -1,10 +1,10 @@
-"""Database access layer.
+"""Database infrastructure layer.
 
 This module initializes the SQLAlchemy engine, session factory, and base
 class for ORM models.
 
-It also defines a FastAPI dependency for per-request database sessions
-via the SessionDep type alias.
+It also defines a FastAPI dependency for per-request SQLAlchemy
+sessions.
 """
 
 from typing import TYPE_CHECKING, Annotated
@@ -51,4 +51,5 @@ def get_db() -> Generator[Session]:
         yield db
 
 
+# Type alias to simplify injecting per-request SQLAlchemy sessions.
 SessionDep = Annotated[Session, Depends(get_db)]
