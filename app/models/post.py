@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class Post(Base):
-    """Represents a blog post in the database.
+    """Represents a blog post.
 
     Attributes:
         id: Primary key.

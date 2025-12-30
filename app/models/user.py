@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class User(Base):
-    """Represents a user in the database.
+    """Represents a user (author) of the blog.
 
     Attributes:
         id: Primary key.
