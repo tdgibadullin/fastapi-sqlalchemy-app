@@ -1,7 +1,7 @@
 """Database infrastructure layer.
 
-This module initializes the SQLAlchemy engine, session factory, and base
-class for ORM models.
+This module initializes the asynchronous SQLAlchemy engine and session
+factory, as well as the base class for ORM models.
 
 It also defines a FastAPI dependency for per-request SQLAlchemy
 sessions.
@@ -10,13 +10,18 @@ sessions.
 from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends
-from sqlalchemy import MetaData, create_engine
-from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+from sqlalchemy import MetaData
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.orm import DeclarativeBase
 
 from app.core.config import settings
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import AsyncGenerator
 
 # Database constraint and index naming convention for the SQLAlchemy
 # declarative base class.
@@ -28,9 +33,13 @@ NAMING_CONVENTION = {
     "pk": "pk_%(table_name)s",
 }
 
-engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
+engine = create_async_engine(
+    str(settings.DATABASE_URL),
+    echo=settings.ENVIRONMENT == "local",
+    pool_pre_ping=True,
+)
 
-SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
+AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 
 class Base(DeclarativeBase):
@@ -45,11 +54,11 @@ class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
 
-def get_db() -> Generator[Session]:
-    """Yields a SQLAlchemy session and closes it after use."""
-    with SessionLocal() as db:
-        yield db
+async def get_db() -> AsyncGenerator[AsyncSession]:
+    """Yields an async SQLAlchemy session and closes it after use."""
+    async with AsyncSessionLocal() as session:
+        yield session
 
 
 # Type alias to simplify injecting per-request SQLAlchemy sessions.
-SessionDep = Annotated[Session, Depends(get_db)]
+SessionDep = Annotated[AsyncSession, Depends(get_db)]
