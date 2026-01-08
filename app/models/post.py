@@ -1,5 +1,6 @@
 """SQLAlchemy ORM model for posts."""
 
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, ForeignKey, String, Text, func
@@ -8,8 +9,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.db import Base
 
 if TYPE_CHECKING:
-    from datetime import datetime
-
     from app.models.user import User
 
 
@@ -35,8 +34,7 @@ class Post(Base):
         server_default=func.now(),
     )
     owner_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id"),
-        ondelete="CASCADE",
+        ForeignKey("users.id", ondelete="CASCADE")
     )
     owner: Mapped["User"] = relationship(back_populates="posts")
 
