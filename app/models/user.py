@@ -35,5 +35,5 @@ class User(Base):
     )
 
     def __repr__(self) -> str:
-        """Returns a debug string representation of the User object."""
+        """Return a debug string representation of the User object."""
         return f"<User id={self.id} email={self.email!r}>"

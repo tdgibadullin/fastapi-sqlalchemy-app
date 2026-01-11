@@ -39,5 +39,5 @@ class Post(Base):
     owner: Mapped["User"] = relationship(back_populates="posts")
 
     def __repr__(self) -> str:
-        """Returns a debug string representation of the Post object."""
+        """Return a debug string representation of the Post object."""
         return f"<Post id={self.id} title={self.title!r}>"

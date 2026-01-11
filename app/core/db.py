@@ -55,7 +55,7 @@ class Base(DeclarativeBase):
 
 
 async def get_db() -> AsyncGenerator[AsyncSession]:
-    """Yields an async SQLAlchemy session and closes it after use."""
+    """Yield an async SQLAlchemy session and close it after use."""
     async with AsyncSessionLocal() as session:
         yield session
 
