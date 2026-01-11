@@ -8,3 +8,9 @@ class Token(BaseModel):
 
     access_token: str
     token_type: str
+
+
+class TokenPayload(BaseModel):
+    """Access token payload schema used for authentication."""
+
+    sub: str | None = None
