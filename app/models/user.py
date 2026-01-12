@@ -1,8 +1,9 @@
 """SQLAlchemy ORM model for users."""
 
+from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String
+from sqlalchemy import DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.db import Base
@@ -16,8 +17,10 @@ class User(Base):
 
     Attributes:
         id: Primary key.
+        username: Unique public username.
         email: Unique email address of the user.
         hashed_password: Securely hashed password.
+        created_at: Timestamp when the user account was created.
         is_active: Indicates whether the user account is active.
         posts: Posts authored by this user.
     """
@@ -25,9 +28,17 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
+
+    username: Mapped[str] = mapped_column(String(20), unique=True, index=True)
     email: Mapped[str] = mapped_column(String(254), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(255))
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
     is_active: Mapped[bool] = mapped_column(default=True)
+
     posts: Mapped[list["Post"]] = relationship(
         back_populates="owner",
         cascade="all, delete-orphan",
@@ -36,4 +47,8 @@ class User(Base):
 
     def __repr__(self) -> str:
         """Return a debug string representation of the User object."""
-        return f"<User id={self.id} email={self.email!r}>"
+        return (
+            f"<User id={self.id} "
+            f"username={self.username!r} "
+            f"email={self.email!r}>"
+        )
