@@ -1,5 +1,6 @@
 """Post-related Pydantic schemas."""
 
+from datetime import datetime
 from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -70,4 +71,5 @@ class PostOut(BaseModel):
     id: int
     title: str
     body: str
+    created_at: datetime
     owner_id: int
