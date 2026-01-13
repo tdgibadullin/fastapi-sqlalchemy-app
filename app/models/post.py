@@ -20,9 +20,9 @@ class Post(Base):
         title: Post title.
         body: Main textual content of the post.
         created_at: Timestamp when the post was created.
-        updated_at: Timestamp when the post was updated.
-        owner_id: Foreign key referencing the post's author.
-        owner: The user this post belongs to.
+        updated_at: Timestamp when the post was last updated.
+        owner_id: Foreign key referencing the associated user's ID.
+        owner: ORM relationship to the User model.
     """
 
     __tablename__ = "posts"

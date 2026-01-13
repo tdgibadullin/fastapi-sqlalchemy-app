@@ -19,10 +19,10 @@ class User(Base):
         id: Primary key.
         username: Unique public username.
         email: Unique email address of the user.
-        hashed_password: Securely hashed password.
+        hashed_password: Securely hashed password of the user.
         created_at: Timestamp when the user account was created.
-        updated_at: Timestamp when the user account was updated.
-        posts: Posts authored by this user.
+        updated_at: Timestamp when the user account was last updated.
+        posts: ORM relationship to the Post model.
     """
 
     __tablename__ = "users"
