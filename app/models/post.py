@@ -20,6 +20,7 @@ class Post(Base):
         title: Post title.
         body: Main textual content of the post.
         created_at: Timestamp when the post was created.
+        updated_at: Timestamp when the post was updated.
         owner_id: Foreign key referencing the post's author.
         owner: The user this post belongs to.
     """
@@ -34,6 +35,11 @@ class Post(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
     )
 
     owner_id: Mapped[int] = mapped_column(

@@ -72,4 +72,5 @@ class PostOut(BaseModel):
     title: str
     body: str
     created_at: datetime
+    updated_at: datetime
     owner_id: int
