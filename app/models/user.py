@@ -21,6 +21,7 @@ class User(Base):
         email: Unique email address of the user.
         hashed_password: Securely hashed password.
         created_at: Timestamp when the user account was created.
+        updated_at: Timestamp when the user account was updated.
         is_active: Indicates whether the user account is active.
         posts: Posts authored by this user.
     """
@@ -36,6 +37,11 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
     )
     is_active: Mapped[bool] = mapped_column(default=True)
 
