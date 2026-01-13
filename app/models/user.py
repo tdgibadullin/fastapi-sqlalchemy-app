@@ -22,7 +22,6 @@ class User(Base):
         hashed_password: Securely hashed password.
         created_at: Timestamp when the user account was created.
         updated_at: Timestamp when the user account was updated.
-        is_active: Indicates whether the user account is active.
         posts: Posts authored by this user.
     """
 
@@ -43,7 +42,6 @@ class User(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
-    is_active: Mapped[bool] = mapped_column(default=True)
 
     posts: Mapped[list["Post"]] = relationship(
         back_populates="owner",
