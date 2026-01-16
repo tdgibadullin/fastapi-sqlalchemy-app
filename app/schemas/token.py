@@ -14,7 +14,10 @@ class Token(BaseModel):
     ]
     token_type: Annotated[
         str,
-        Field(description="Type of the token issued."),
+        Field(
+            default="bearer",
+            description="Type of the token issued.",
+        ),
     ]
 
 
