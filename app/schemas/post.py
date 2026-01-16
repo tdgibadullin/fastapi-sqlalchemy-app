@@ -19,6 +19,7 @@ class PostCreate(BaseModel):
         Field(
             min_length=2,
             max_length=255,
+            description="Title of the post.",
             examples=["My Post"],
         ),
     ]
@@ -27,6 +28,7 @@ class PostCreate(BaseModel):
         Field(
             min_length=1,
             max_length=100000,
+            description="Main textual content of the post.",
             examples=["This is the content of my post..."],
         ),
     ]
@@ -46,6 +48,7 @@ class PostUpdate(BaseModel):
             default=None,
             min_length=2,
             max_length=255,
+            description="Updated title of the post.",
             examples=["My Updated Post"],
         ),
     ]
@@ -55,6 +58,7 @@ class PostUpdate(BaseModel):
             default=None,
             min_length=1,
             max_length=100000,
+            description="Updated textual content of the post.",
             examples=["This is the updated content of my post..."],
         ),
     ]
@@ -68,9 +72,27 @@ class PostOut(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
-    title: str
-    body: str
-    created_at: datetime
-    updated_at: datetime
-    owner_id: int
+    id: Annotated[
+        int,
+        Field(description="Unique identifier for the post."),
+    ]
+    title: Annotated[
+        str,
+        Field(description="Title of the post."),
+    ]
+    body: Annotated[
+        str,
+        Field(description="Main textual content of the post."),
+    ]
+    created_at: Annotated[
+        datetime,
+        Field(description="Timestamp when the post was created."),
+    ]
+    updated_at: Annotated[
+        datetime,
+        Field(description="Timestamp when the post was last updated."),
+    ]
+    owner_id: Annotated[
+        int,
+        Field(description="ID of the user who authored the post."),
+    ]
