@@ -25,9 +25,6 @@ class TokenPayload(BaseModel):
     """Access token payload schema used for authentication."""
 
     sub: Annotated[
-        str | None,
-        Field(
-            default=None,
-            description="Subject claim of the token (user identifier).",
-        ),
+        int,
+        Field(description="Subject claim of the token (user ID)."),
     ]
