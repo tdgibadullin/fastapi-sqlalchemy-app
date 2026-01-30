@@ -46,17 +46,24 @@ def create_access_token(
     )
 
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify a plain-text password against a stored hash.
+def verify_password(
+    plain_password: str,
+    hashed_password: str,
+) -> tuple[bool, str | None]:
+    """Verify a password and rehash it if necessary.
 
     Args:
         plain_password: Plain-text password provided by the user.
         hashed_password: Hashed password stored in the database.
 
     Returns:
-        True if the password matches the hash, False otherwise.
+        Tuple containing:
+        - bool: True if the password matches the hash, False otherwise.
+        - str | None: New hash string if the password is valid and the
+        current hasher/the hash itself needs to be updated, otherwise
+        None.
     """
-    return password_hash.verify(plain_password, hashed_password)
+    return password_hash.verify_and_update(plain_password, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
