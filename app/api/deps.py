@@ -10,6 +10,7 @@ from pydantic import ValidationError
 
 from app.core.config import settings
 from app.core.db import SessionDep
+from app.crud.user import get_user_by_id
 from app.models.user import User
 from app.schemas.token import TokenPayload
 
@@ -53,7 +54,7 @@ async def get_current_user(session: SessionDep, token: TokenDep) -> User:
     except (InvalidTokenError, ValidationError):
         raise credentials_exception from None
 
-    user = await session.get(User, token_data.sub)
+    user = await get_user_by_id(session=session, user_id=token_data.sub)
 
     if user is None:
         raise credentials_exception
