@@ -60,5 +60,4 @@ async def get_db() -> AsyncGenerator[AsyncSession]:
         yield session
 
 
-# Type alias to simplify injecting per-request SQLAlchemy sessions.
 SessionDep = Annotated[AsyncSession, Depends(get_db)]
