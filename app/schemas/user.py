@@ -54,34 +54,31 @@ class UserUpdate(BaseModel):
     username: Annotated[
         str | None,
         Field(
-            default=None,
             min_length=3,
             max_length=20,
             pattern=r"^[a-zA-Z0-9_-]+$",
             description="Updated public username. Must be unique.",
             examples=["New_Author_2026"],
         ),
-    ]
+    ] = None
     email: Annotated[
         EmailStr | None,
         Field(
-            default=None,
             max_length=254,
             description="Updated valid email address of the user. Must be "
             "unique.",
             examples=["new@example.com"],
         ),
-    ]
+    ] = None
     password: Annotated[
         str | None,
         Field(
-            default=None,
             min_length=12,
             max_length=128,
             description="Updated plain-text password of the user.",
             examples=["NewStrongPass123!"],
         ),
-    ]
+    ] = None
 
 
 class UserOut(BaseModel):

@@ -45,23 +45,21 @@ class PostUpdate(BaseModel):
     title: Annotated[
         str | None,
         Field(
-            default=None,
             min_length=2,
             max_length=255,
             description="Updated title of the post.",
             examples=["My Updated Post"],
         ),
-    ]
+    ] = None
     body: Annotated[
         str | None,
         Field(
-            default=None,
             min_length=1,
             max_length=100000,
             description="Updated textual content of the post.",
             examples=["This is the updated content of my post..."],
         ),
-    ]
+    ] = None
 
 
 class PostOut(BaseModel):

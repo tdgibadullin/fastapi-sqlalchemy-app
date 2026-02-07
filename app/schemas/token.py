@@ -14,11 +14,8 @@ class Token(BaseModel):
     ]
     token_type: Annotated[
         str,
-        Field(
-            default="bearer",
-            description="Type of the token issued.",
-        ),
-    ]
+        Field(description="Type of the token issued."),
+    ] = "bearer"  # noqa: S105 (OAuth 2.0 token type, not a secret)
 
 
 class TokenPayload(BaseModel):
