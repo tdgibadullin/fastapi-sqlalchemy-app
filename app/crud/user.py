@@ -47,7 +47,7 @@ async def create_user(
     return user
 
 
-async def get_user_by_id(
+async def get_user(
     *,
     session: AsyncSession,
     user_id: int,

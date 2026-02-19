@@ -37,7 +37,7 @@ async def create_post(
     return post
 
 
-async def get_post_by_id(
+async def get_post(
     *,
     session: AsyncSession,
     post_id: int,
@@ -60,7 +60,7 @@ async def get_posts(
     skip: int = 0,
     limit: int = 100,
 ) -> Sequence[Post]:
-    """Retrieve a list of posts with pagination.
+    """Retrieve posts with pagination.
 
     Args:
         session: Database session.
@@ -72,10 +72,7 @@ async def get_posts(
         descending order.
     """
     statement = (
-        select(Post)
-        .order_by(Post.created_at.desc())
-        .offset(skip)
-        .limit(limit)
+        select(Post).order_by(Post.created_at.desc()).offset(skip).limit(limit)
     )
     result = await session.scalars(statement)
     return result.all()
