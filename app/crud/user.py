@@ -82,6 +82,26 @@ async def get_user_by_email(
     return result.one_or_none()
 
 
+async def get_user_by_username(
+    *,
+    session: AsyncSession,
+    username: str,
+) -> User | None:
+    """Retrieve a user by their username.
+
+    Args:
+        session: Database session.
+        username: Name identifying the user.
+
+    Returns:
+        User instance if found, otherwise None.
+    """
+    result = await session.scalars(
+        select(User).where(User.username == username)
+    )
+    return result.one_or_none()
+
+
 async def authenticate_user(
     *,
     session: AsyncSession,
