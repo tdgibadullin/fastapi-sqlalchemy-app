@@ -19,9 +19,12 @@ class Token(BaseModel):
 
 
 class TokenPayload(BaseModel):
-    """Access token payload schema used for authentication."""
+    """Schema representing access token payload claims."""
 
     sub: Annotated[
-        int,
-        Field(description="Subject claim of the token (user ID)."),
+        str,
+        Field(
+            description="Subject claim of the token (user ID). Must be a"
+            " string per RFC 7519."
+        ),
     ]
