@@ -57,8 +57,8 @@ async def get_post(
 async def get_posts(
     *,
     session: AsyncSession,
-    skip: int = 0,
-    limit: int = 100,
+    skip: int,
+    limit: int,
 ) -> Sequence[Post]:
     """Retrieve posts with pagination.
 
