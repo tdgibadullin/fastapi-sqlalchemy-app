@@ -1,5 +1,6 @@
 """API endpoints for managing posts."""
 
+import logging
 from typing import TYPE_CHECKING, Annotated
 
 from fastapi import APIRouter, HTTPException, Path, Query, status
@@ -13,6 +14,8 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from app.models.post import Post
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -109,16 +112,25 @@ async def update_post(
             the post owner.
     """
     post = await post_crud.get_post(session=session, post_id=post_id)
+
     if post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Post not found",
         )
+
     if post.owner_id != current_user.id:
+        logger.warning(
+            "User %s attempted to update post %s belonging to user %s",
+            current_user.id,
+            post.id,
+            post.owner_id,
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Permission denied",
         )
+
     return await post_crud.update_post(
         session=session,
         post=post,
@@ -145,14 +157,23 @@ async def delete_post(
             the post owner.
     """
     post = await post_crud.get_post(session=session, post_id=post_id)
+
     if post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Post not found",
         )
+
     if post.owner_id != current_user.id:
+        logger.warning(
+            "User %s attempted to delete post %s belonging to user %s",
+            current_user.id,
+            post.id,
+            post.owner_id,
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Permission denied",
         )
+
     await post_crud.delete_post(session=session, post=post)

@@ -1,5 +1,6 @@
 """API endpoints for user authentication."""
 
+import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -9,6 +10,8 @@ from app.core.db import SessionDep
 from app.core.security import create_access_token
 from app.crud.user import authenticate_user
 from app.schemas.token import Token, TokenPayload
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["login"])
 
@@ -42,6 +45,10 @@ async def login_access_token(
         password=form_data.password,
     )
     if user is None:
+        logger.warning(
+            "Failed login attempt for email: %s",
+            form_data.username,
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -51,4 +58,5 @@ async def login_access_token(
     access_token = create_access_token(
         data=TokenPayload(sub=str(user.id)).model_dump()
     )
+    logger.info("User %s (%s) logged in successfully", user.id, user.email)
     return Token(access_token=access_token)

@@ -1,5 +1,5 @@
 """Core application modules.
 
-This package provides application configuration, database
-infrastructure, and security utilities.
+This package provides application configuration, separate logging
+settings, database infrastructure, and security utilities.
 """

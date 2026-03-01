@@ -1,5 +1,6 @@
 """Authentication dependencies for API endpoints."""
 
+import logging
 from typing import Annotated
 
 import jwt
@@ -13,6 +14,8 @@ from app.core.db import SessionDep
 from app.crud.user import get_user
 from app.models.user import User
 from app.schemas.token import TokenPayload
+
+logger = logging.getLogger(__name__)
 
 # OAuth 2.0 scheme that extracts the token from headers, handles OpenAPI
 # docs, and returns a 401 Unauthorized error if the token is missing.
@@ -52,6 +55,7 @@ async def get_current_user(session: SessionDep, token: TokenDep) -> User:
         )
         token_data = TokenPayload(**payload)
     except InvalidTokenError, ValidationError:
+        logger.warning("Invalid token used")
         raise credentials_exception from None
 
     try:
@@ -62,6 +66,7 @@ async def get_current_user(session: SessionDep, token: TokenDep) -> User:
     user = await get_user(session=session, user_id=user_id)
 
     if user is None:
+        logger.warning("Token used for non-existent user_id: %s", user_id)
         raise credentials_exception
 
     return user

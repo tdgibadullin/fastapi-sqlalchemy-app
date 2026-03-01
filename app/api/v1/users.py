@@ -1,5 +1,6 @@
 """API endpoints for user management."""
 
+import logging
 from typing import TYPE_CHECKING
 
 from fastapi import APIRouter, HTTPException, status
@@ -11,6 +12,8 @@ from app.schemas.user import UserCreate, UserOut, UserUpdate
 
 if TYPE_CHECKING:
     from app.models.user import User
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -53,7 +56,9 @@ async def register_user(
             detail="Username already taken",
         )
 
-    return await user_crud.create_user(session=session, user_in=user_in)
+    user = await user_crud.create_user(session=session, user_in=user_in)
+    logger.info("User %s (%s) registered successfully", user.id, user.email)
+    return user
 
 
 @router.get("/me", response_model=UserOut)
@@ -130,3 +135,8 @@ async def delete_user_me(
         current_user: Authenticated user.
     """
     await user_crud.delete_user(session=session, user=current_user)
+    logger.info(
+        "User %s (%s) deleted their account",
+        current_user.id,
+        current_user.email,
+    )
