@@ -13,12 +13,9 @@ def setup_logging() -> None:
     levels. Redirects web server loggers to propagate through the root
     configuration.
     """
-    log_format = (
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s "
-        "(%(filename)s:%(lineno)d)"
-        if settings.ENVIRONMENT == "local"
-        else "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
+    log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    if settings.ENVIRONMENT == "local":
+        log_format += " (%(filename)s:%(lineno)d)"
 
     logging.basicConfig(
         level=logging.INFO,
@@ -26,7 +23,6 @@ def setup_logging() -> None:
         handlers=[logging.StreamHandler(sys.stdout)],
         force=True,
     )
-
     if settings.ENVIRONMENT == "local":
         logging.getLogger("app").setLevel(logging.DEBUG)
 
@@ -38,7 +34,6 @@ def setup_logging() -> None:
         "uvicorn.access",
         "uvicorn.error",
     )
-
     for logger_name in server_loggers:
         server_logger = logging.getLogger(logger_name)
         server_logger.handlers.clear()
