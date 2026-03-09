@@ -4,9 +4,16 @@ Sensitive values are loaded from environment variables; other settings
 use defaults unless overridden.
 """
 
-from typing import Literal
+from typing import Literal, Self
 
-from pydantic import PostgresDsn, RedisDsn, SecretStr, computed_field
+from pydantic import (
+    EmailStr,
+    PostgresDsn,
+    RedisDsn,
+    SecretStr,
+    computed_field,
+    model_validator,
+)
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -33,6 +40,13 @@ class Settings(BaseSettings):
         REDIS_HOST: Hostname or IP address of the Redis server.
         REDIS_PORT: Redis server port.
         REDIS_DB: Index of the Redis database.
+        SMTP_USER: Username for SMTP server authentication.
+        SMTP_PASSWORD: Password for SMTP server authentication.
+        SMTP_HOST: Hostname or IP address of the SMTP server.
+        SMTP_PORT: SMTP server port.
+        SMTP_TLS: Whether to use TLS for the SMTP connection.
+        SENDER_EMAIL: Email address for the sender of outgoing emails.
+        SENDER_NAME: Display name for the sender of outgoing emails.
     """
 
     model_config = SettingsConfigDict(
@@ -84,6 +98,28 @@ class Settings(BaseSettings):
             port=self.REDIS_PORT,
             path=str(self.REDIS_DB),
         )
+
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: SecretStr | None = None
+    SMTP_HOST: str = "localhost"
+    SMTP_PORT: int = 1025
+    SMTP_TLS: bool = False
+    SENDER_EMAIL: EmailStr = "noreply@fastapi-blog.local"
+    SENDER_NAME: str | None = None
+
+    @model_validator(mode="after")
+    def validate_sender_name(self) -> Self:
+        """Ensure that a sender name for outgoing emails is set.
+
+        If SENDER_NAME is not provided, assigns it to PROJECT_NAME.
+        Otherwise, keeps the explicitly configured value unchanged.
+
+        Returns:
+            Validated Settings instance.
+        """
+        if self.SENDER_NAME is None:
+            self.SENDER_NAME = self.PROJECT_NAME
+        return self
 
 
 settings = Settings()

@@ -3,10 +3,12 @@
 import logging
 from typing import TYPE_CHECKING
 
+from celery.exceptions import CeleryError
 from fastapi import APIRouter, HTTPException, status
 
 import app.crud.user as user_crud
 from app.api.deps import CurrentUser
+from app.celery.tasks import send_welcome_email
 from app.core.db import SessionDep
 from app.schemas.user import UserCreate, UserOut, UserUpdate
 
@@ -24,6 +26,9 @@ async def register_user(
     user_in: UserCreate,
 ) -> User:
     """Register a new user.
+
+    Creates a user record in the database and triggers a background
+    task to send a welcome email.
 
     Args:
         session: Database session.
@@ -58,6 +63,16 @@ async def register_user(
 
     user = await user_crud.create_user(session=session, user_in=user_in)
     logger.info("User %s (%s) registered successfully", user.id, user.email)
+
+    try:
+        send_welcome_email.delay(email=user.email, username=user.username)
+    except CeleryError:
+        logger.exception(
+            "Failed to enqueue welcome email for user %s (%s)",
+            user.id,
+            user.email,
+        )
+
     return user
 
 
