@@ -16,6 +16,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/45/8e/d79281f323e7469b060f15bd229e48d7cdd219559e67e71c013720a88340/alembic-1.18.3-py3-none-any.whl", hash = "sha256:12a0359bfc068a4ecbb9b3b02cf77856033abfdb59e4a5aca08b7eacd7b74ddd", size = 262282, upload-time = "2026-01-29T20:24:17.488Z" },
 ]
 
+[package.optional-dependencies]
+tz = [
+    { name = "tzdata" },
+]
+
 [[package]]
 name = "amqp"
 version = "5.3.1"
@@ -344,7 +349,7 @@ name = "fastapi-blog-backend"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "alembic" },
+    { name = "alembic", extra = ["tz"] },
     { name = "asyncpg" },
     { name = "celery", extra = ["redis"] },
     { name = "fastapi", extra = ["standard"] },
@@ -369,7 +374,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "alembic", specifier = ">=1.18.3" },
+    { name = "alembic", extras = ["tz"], specifier = ">=1.18.3" },
     { name = "asyncpg", specifier = ">=0.31.0" },
     { name = "celery", extras = ["redis"], specifier = ">=5.6.2" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.128.5" },

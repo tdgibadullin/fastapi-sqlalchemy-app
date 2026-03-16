@@ -5,7 +5,7 @@ description = "FastAPI / async SQLAlchemy backend for a blog"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-  "alembic>=1.18.3",
+  "alembic[tz]>=1.18.3",
   "asyncpg>=0.31.0",
   "celery[redis]>=5.6.2",
   "fastapi[standard]>=0.128.5",
@@ -27,6 +27,27 @@ dev = [
   "ruff>=0.15.0",
   "toml-sort>=0.24.3",
 ]
+
+[tool.alembic]
+file_template = """
+%%(year)d_%%(month).2d_%%(day).2d_\
+%%(hour).2d%%(minute).2d-%%(rev)s_%%(slug)s
+"""
+prepend_sys_path = ["."]
+script_location = "alembic"
+timezone = "UTC"
+
+[[tool.alembic.post_write_hooks]]
+module = "ruff"
+name = "ruff-check"
+options = "check --fix REVISION_SCRIPT_FILENAME"
+type = "module"
+
+[[tool.alembic.post_write_hooks]]
+module = "ruff"
+name = "ruff-format"
+options = "format REVISION_SCRIPT_FILENAME"
+type = "module"
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]
@@ -96,12 +117,19 @@ runtime-evaluated-base-classes = [
   "sqlalchemy.orm.DeclarativeBase",
 ]
 
+[tool.ruff.lint.isort]
+known-third-party = ["alembic"]
+
 [tool.ruff.lint.pep8-naming]
 # Allow uppercase computed fields in Settings to match environment
 # variable naming conventions.
 ignore-names = ["DATABASE_URL", "REDIS_URL"]
 
 [tool.ruff.lint.per-file-ignores]
+# Allow non-package structure for the Alembic directory.
+"alembic/**" = ["INP001"]
+# Relax docstring and line length rules for auto-generated migrations.
+"alembic/versions/*" = ["D", "E501"]
 # Permit runtime imports of API dependencies.
 "app/api/**" = ["TC001", "TC002"]
 # Allow asserts and missing docstrings in tests.
