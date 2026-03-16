@@ -104,7 +104,7 @@ class Settings(BaseSettings):
     SMTP_HOST: str = "localhost"
     SMTP_PORT: int = 1025
     SMTP_TLS: bool = False
-    SENDER_EMAIL: EmailStr = "noreply@fastapi-blog.local"
+    SENDER_EMAIL: EmailStr = "noreply@fastapi-blog.com"
     SENDER_NAME: str | None = None
 
     @model_validator(mode="after")
