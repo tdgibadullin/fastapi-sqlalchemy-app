@@ -69,7 +69,6 @@ line-length = 79
 target-version = "py314"
 
 [tool.ruff.lint]
-ignore = ["COM812"]  # May conflict with the Ruff formatter
 select = [
   "A",  # flake8-builtins
   "ANN",  # flake8-annotations
@@ -106,6 +105,17 @@ select = [
   "TRY",  # tryceratops
   "UP",  # pyupgrade
   "W",  # pycodestyle warning
+]
+# Disable rules that may conflict with the Ruff formatter.
+ignore = [
+  "COM812",  # missing-trailing-comma
+  "COM819",  # prohibited-trailing-comma
+  "D206",  # docstring-tab-indentation
+  "D300",  # triple-single-quotes
+  "E111",  # indentation-with-invalid-multiple
+  "E114",  # indentation-with-invalid-multiple-comment
+  "E117",  # over-indented
+  "W191",  # tab-indentation
 ]
 
 [tool.ruff.lint.flake8-type-checking]
@@ -148,4 +158,5 @@ sort_first = ["project", "dependency-groups"]
 spaces_before_inline_comment = 2
 trailing_comma_inline_array = true
 overrides."project".table_keys = false
+overrides."tool.ruff.lint".table_keys = false
 overrides."tool.tomlsort.sort_first".inline_arrays = false
