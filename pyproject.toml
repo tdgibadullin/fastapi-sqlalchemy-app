@@ -75,6 +75,7 @@ select = [
   "ARG",  # flake8-unused-arguments
   "ASYNC",  # flake8-async
   "B",  # flake8-bugbear
+  "BLE",  # flake8-blind-except
   "C4",  # flake8-comprehensions
   "COM",  # flake8-commas
   "D",  # pydocstyle
@@ -91,10 +92,12 @@ select = [
   "INP",  # flake8-no-pep420
   "LOG",  # flake8-logging
   "N",  # pep8-naming
+  "PGH",  # pygrep-hooks
   "PIE",  # flake8-pie
   "PL",  # Pylint
   "PT",  # flake8-pytest-style
   "RET",  # flake8-return
+  "RSE",  # flake8-raise
   "RUF",  # Ruff-specific rules
   "S",  # flake8-bandit
   "SIM",  # flake8-simplify
