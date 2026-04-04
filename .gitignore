@@ -1,6 +1,5 @@
-# Byte-compiled / optimized / DLL files
+# Python bytecode
 __pycache__/
-*.py[cod]
 
 # Virtual environment
 .venv/
@@ -8,7 +7,7 @@ __pycache__/
 # Environment variables
 .env
 
-# Development tools caches
+# Development tool caches
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
