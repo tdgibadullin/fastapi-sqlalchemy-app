@@ -67,7 +67,7 @@ class Settings(BaseSettings):
 
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: SecretStr
-    POSTGRES_HOST: str = "localhost"
+    POSTGRES_HOST: str = "db"
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: str = "fastapi_blog"
 
@@ -84,7 +84,7 @@ class Settings(BaseSettings):
             path=self.POSTGRES_DB,
         )
 
-    REDIS_HOST: str = "localhost"
+    REDIS_HOST: str = "redis"
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
 
@@ -101,7 +101,7 @@ class Settings(BaseSettings):
 
     SMTP_USER: str | None = None
     SMTP_PASSWORD: SecretStr | None = None
-    SMTP_HOST: str = "localhost"
+    SMTP_HOST: str = "mailpit"
     SMTP_PORT: int = 1025
     SMTP_TLS: bool = False
     SENDER_EMAIL: EmailStr = "noreply@fastapi-blog.com"
