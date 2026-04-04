@@ -10,7 +10,7 @@ def setup_logging() -> None:
     """Configure application logging.
 
     Sets up the root logger with environment-specific formatting and
-    levels. Redirects web server loggers to propagate through the root
+    levels. Redirects Uvicorn loggers to propagate through the root
     configuration.
     """
     log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -26,15 +26,8 @@ def setup_logging() -> None:
     if settings.ENVIRONMENT == "local":
         logging.getLogger("app").setLevel(logging.DEBUG)
 
-    server_loggers = (
-        "gunicorn",
-        "gunicorn.access",
-        "gunicorn.error",
-        "uvicorn",
-        "uvicorn.access",
-        "uvicorn.error",
-    )
-    for logger_name in server_loggers:
-        server_logger = logging.getLogger(logger_name)
-        server_logger.handlers.clear()
-        server_logger.propagate = True
+    uvicorn_loggers = ("uvicorn", "uvicorn.access", "uvicorn.error")
+    for logger_name in uvicorn_loggers:
+        uvicorn_logger = logging.getLogger(logger_name)
+        uvicorn_logger.handlers.clear()
+        uvicorn_logger.propagate = True
