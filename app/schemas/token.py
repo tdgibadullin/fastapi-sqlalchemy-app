@@ -24,7 +24,7 @@ class TokenPayload(BaseModel):
     sub: Annotated[
         str,
         Field(
-            description="Subject claim of the token (user ID). Must be a"
-            " string per RFC 7519."
+            description="Subject claim of the token (user ID). Must be a "
+            "string per RFC 7519."
         ),
     ]
