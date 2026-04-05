@@ -65,7 +65,7 @@ class Settings(BaseSettings):
     # 60 minutes * 24 hours * 7 days = 7 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
-    POSTGRES_USER: str = "postgres"
+    POSTGRES_USER: str = "app_user"
     POSTGRES_PASSWORD: SecretStr
     POSTGRES_HOST: str = "db"
     POSTGRES_PORT: int = 5432
