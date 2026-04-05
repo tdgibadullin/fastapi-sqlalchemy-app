@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class Post(Base):
-    """Represents a blog post.
+    """Represents a post.
 
     Attributes:
         id: Primary key.

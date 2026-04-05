@@ -56,7 +56,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    PROJECT_NAME: str = "FastAPI Blog Backend"
+    PROJECT_NAME: str = "fastapi-sqlalchemy-app"
     API_V1_STR: str = "/api/v1"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
 
@@ -69,7 +69,7 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: SecretStr
     POSTGRES_HOST: str = "db"
     POSTGRES_PORT: int = 5432
-    POSTGRES_DB: str = "fastapi_blog"
+    POSTGRES_DB: str = "app_db"
 
     @computed_field  # type: ignore[prop-decorator]
     @property
@@ -104,7 +104,7 @@ class Settings(BaseSettings):
     SMTP_HOST: str = "mailpit"
     SMTP_PORT: int = 1025
     SMTP_TLS: bool = False
-    SENDER_EMAIL: EmailStr = "noreply@fastapi-blog.com"
+    SENDER_EMAIL: EmailStr = "noreply@fastapi-sqlalchemy-app.com"
     SENDER_NAME: str | None = None
 
     @model_validator(mode="after")
