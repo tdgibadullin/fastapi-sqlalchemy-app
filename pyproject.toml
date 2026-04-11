@@ -27,10 +27,7 @@ dev = [
 ]
 
 [tool.alembic]
-file_template = """
-%%(year)d_%%(month).2d_%%(day).2d_\
-%%(hour).2d%%(minute).2d-%%(rev)s_%%(slug)s
-"""
+file_template = "%%(year)d_%%(month).2d_%%(day).2d_%%(hour).2d%%(minute).2d-%%(rev)s_%%(slug)s"
 prepend_sys_path = ["."]
 script_location = "alembic"
 timezone = "UTC"
@@ -120,8 +117,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.flake8-type-checking]
-# Treat type annotations in SQLAlchemy models and Pydantic schemas
-# as required at runtime.
+# Treat type annotations in SQLAlchemy models and Pydantic schemas as required at runtime.
 runtime-evaluated-base-classes = [
   "app.core.db.Base",
   "pydantic.BaseModel",
@@ -132,8 +128,7 @@ runtime-evaluated-base-classes = [
 known-third-party = ["alembic"]
 
 [tool.ruff.lint.pep8-naming]
-# Allow uppercase computed fields in Settings to match environment
-# variable naming conventions.
+# Allow uppercase computed fields in Settings to match environment variable naming conventions.
 ignore-names = ["DATABASE_URL", "REDIS_URL"]
 
 [tool.ruff.lint.per-file-ignores]
