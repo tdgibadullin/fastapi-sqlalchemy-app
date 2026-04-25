@@ -2,7 +2,7 @@
 
 FROM python:3.14-slim AS builder
 
-# hadolint ignore=DL3008 # Allow installing unversioned build-time tools
+# hadolint ignore=DL3008 # Allow installing unversioned build-time Git
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
