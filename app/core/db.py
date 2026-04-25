@@ -33,11 +33,7 @@ NAMING_CONVENTION = {
     "pk": "pk_%(table_name)s",
 }
 
-engine = create_async_engine(
-    str(settings.DATABASE_URL),
-    echo=settings.ENVIRONMENT == "local",
-    pool_pre_ping=True,
-)
+engine = create_async_engine(str(settings.DATABASE_URL), pool_pre_ping=True)
 
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 

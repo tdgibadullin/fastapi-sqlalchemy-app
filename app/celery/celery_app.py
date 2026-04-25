@@ -1,6 +1,7 @@
 """Celery application initialization and configuration."""
 
 import logging
+import sys
 
 from celery import Celery
 from celery.app.log import TaskFormatter
@@ -20,21 +21,26 @@ celery_app = Celery(
 def setup_celery_logging(**_: object) -> None:
     """Integrate Celery loggers with the application's root logger.
 
-    Applies the global logging configuration and enriches
-    Celery-specific logs with task IDs and names.
+    Applies the global logging configuration and enriches Celery task
+    logs with task IDs and names.
 
     Args:
         **_: Unused keyword arguments passed by the Celery signal.
     """
     setup_root_logging()
 
-    log_format = (
-        "%(asctime)s - %(task_id)s - %(task_name)s - %(name)s - %(levelname)s "
-        "- %(message)s"
+    task_log_format = (
+        "%(asctime)s - [%(task_id)s] - %(task_name)s - %(name)s "
+        "- %(levelname)s - %(message)s"
     )
     if settings.ENVIRONMENT == "local":
-        log_format += " (%(filename)s:%(lineno)d)"
+        task_log_format += " (%(filename)s:%(lineno)d)"
 
-    formatter = TaskFormatter(log_format)
-    for handler in logging.getLogger().handlers:
-        handler.setFormatter(formatter)
+    task_formatter = TaskFormatter(task_log_format)
+
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(task_formatter)
+
+    task_logger = logging.getLogger("app.celery")
+    task_logger.addHandler(console_handler)
+    task_logger.propagate = False
