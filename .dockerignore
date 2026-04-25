@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile
+compose.yaml
+
+# Python
+**/__pycache__
+.python-version
+
+# Environment
+.env
+.env.*
+.venv
+
+# Development tooling
+.commitlintrc.yaml
+.mypy_cache
+.pre-commit-config.yaml
+.pytest_cache
+.ruff_cache
+justfile
+
+# Documentation
+LICENSE
+README.md
+
+# OS & IDE
+**/.DS_Store
+.idea
