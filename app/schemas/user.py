@@ -44,7 +44,7 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    """Schema for user update input.
+    """Schema for username and email update input.
 
     All fields are optional. Prohibits providing extra data.
     """
@@ -70,15 +70,34 @@ class UserUpdate(BaseModel):
             examples=["new@example.com"],
         ),
     ] = None
-    password: Annotated[
-        str | None,
+
+
+class UserPasswordUpdate(BaseModel):
+    """Schema for password update input.
+
+    Prohibits providing extra data.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    current_password: Annotated[
+        str,
         Field(
             min_length=12,
             max_length=128,
-            description="Updated plain-text password of the user.",
+            description="Current plain-text password of the user.",
+            examples=["StrongPass123!"],
+        ),
+    ]
+    new_password: Annotated[
+        str,
+        Field(
+            min_length=12,
+            max_length=128,
+            description="New plain-text password of the user.",
             examples=["NewStrongPass123!"],
         ),
-    ] = None
+    ]
 
 
 class UserOut(BaseModel):

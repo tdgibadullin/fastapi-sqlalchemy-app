@@ -151,10 +151,9 @@ async def update_user(
     user: User,
     user_in: UserUpdate,
 ) -> User:
-    """Update a user.
+    """Update a user's username and/or email.
 
-    Only fields explicitly provided in the input schema are updated. If
-    a password is included, it is hashed before being stored.
+    Only fields explicitly provided in the input schema are updated.
 
     Args:
         session: Database session.
@@ -166,15 +165,31 @@ async def update_user(
     """
     update_data = user_in.model_dump(exclude_unset=True)
 
-    if "password" in update_data:
-        user.hashed_password = get_password_hash(update_data.pop("password"))
-
     for field, value in update_data.items():
         setattr(user, field, value)
 
     await session.commit()
     await session.refresh(user)
     return user
+
+
+async def update_password(
+    *,
+    session: AsyncSession,
+    user: User,
+    password: str,
+) -> None:
+    """Update a user's password.
+
+    Hashes the password before storing.
+
+    Args:
+        session: Database session.
+        user: User instance to update.
+        password: User's new plain-text password.
+    """
+    user.hashed_password = get_password_hash(password)
+    await session.commit()
 
 
 async def delete_user(
