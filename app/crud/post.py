@@ -68,11 +68,13 @@ async def get_posts(
         limit: Maximum number of records to return.
 
     Returns:
-        Sequence of Post instances, ordered by creation time in
-        descending order.
+        Sequence of Post instances, ordered newest-first.
     """
     statement = (
-        select(Post).order_by(Post.created_at.desc()).offset(skip).limit(limit)
+        select(Post)
+        .order_by(Post.created_at.desc(), Post.id.desc())
+        .offset(skip)
+        .limit(limit)
     )
     result = await session.scalars(statement)
     return result.all()
