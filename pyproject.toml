@@ -10,6 +10,7 @@ dependencies = [
   "fastapi[standard]>=0.135",
   "pwdlib[argon2]>=0.3",
   "pydantic-settings>=2.13",
+  "pydantic[email]>=2.12",
   "pyjwt>=2.12",
   "sqlalchemy>=2.0",
 ]
