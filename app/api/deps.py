@@ -1,4 +1,4 @@
-"""Authentication dependencies for API endpoints."""
+"""Dependencies for API endpoints."""
 
 import logging
 from typing import Annotated

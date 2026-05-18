@@ -15,7 +15,7 @@ router = APIRouter(tags=["health"])
 
 @router.get("/health", status_code=status.HTTP_200_OK)
 async def health_check(session: SessionDep) -> dict[str, str]:
-    """Check application health and database connectivity.
+    """Check application health by verifying database connectivity.
 
     Args:
         session: Database session.
