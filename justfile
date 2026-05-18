@@ -41,7 +41,7 @@ format:
 lint:
     docker compose run --rm --no-deps api bash -c "ruff check . && mypy ."
 
-# Run pytest (e.g., `just test -k test_auth`)
+# Run pytest (e.g., `just test -k test_users`)
 [no-exit-message]
 test *args:
     docker compose up -d --wait db
