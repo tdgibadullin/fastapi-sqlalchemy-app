@@ -26,6 +26,8 @@ class Settings(BaseSettings):
         API_V1_STR: Base path for version 1 of the API.
         ENVIRONMENT: Runtime environment (local, staging, or
             production).
+        CORS_ORIGINS: List of origins allowed to make cross-origin
+            requests.
         SECRET_KEY: Secret key for JWT signing. Must be set via an
             environment variable.
         ALGORITHM: Algorithm used for JWT signing.
@@ -59,6 +61,10 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "fastapi-sqlalchemy-app"
     API_V1_STR: str = "/api/v1"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+    ]
 
     SECRET_KEY: SecretStr
     ALGORITHM: str = "HS256"
