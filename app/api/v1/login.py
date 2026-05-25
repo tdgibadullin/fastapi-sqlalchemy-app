@@ -9,6 +9,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.core.db import SessionDep
 from app.core.security import create_access_token
 from app.crud.user import authenticate_user
+from app.schemas.error import ErrorResponse
 from app.schemas.token import Token, TokenPayload
 
 logger = logging.getLogger(__name__)
@@ -16,7 +17,15 @@ logger = logging.getLogger(__name__)
 router = APIRouter(tags=["login"])
 
 
-@router.post("/login/access-token")
+@router.post(
+    "/login/access-token",
+    responses={
+        401: {
+            "model": ErrorResponse,
+            "description": "Incorrect email or password",
+        }
+    },
+)
 async def login_access_token(
     session: SessionDep,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],

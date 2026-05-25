@@ -7,13 +7,19 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.db import SessionDep
+from app.schemas.error import ErrorResponse
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["health"])
 
 
-@router.get("/health", status_code=status.HTTP_200_OK)
+@router.get(
+    "/health",
+    responses={
+        503: {"model": ErrorResponse, "description": "Database is unavailable"}
+    },
+)
 async def health_check(session: SessionDep) -> dict[str, str]:
     """Check application health by verifying database connectivity.
 

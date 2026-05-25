@@ -8,6 +8,7 @@ from fastapi import APIRouter, HTTPException, Path, Query, status
 import app.crud.post as post_crud
 from app.api.deps import CurrentUser
 from app.core.db import SessionDep
+from app.schemas.error import ErrorResponse
 from app.schemas.post import PostCreate, PostOut, PostUpdate
 
 if TYPE_CHECKING:
@@ -62,7 +63,11 @@ async def read_posts(
     return await post_crud.get_posts(session=session, skip=skip, limit=limit)
 
 
-@router.get("/{id}", response_model=PostOut)
+@router.get(
+    "/{id}",
+    response_model=PostOut,
+    responses={404: {"model": ErrorResponse, "description": "Post not found"}},
+)
 async def read_post(
     session: SessionDep,
     post_id: Annotated[int, Path(alias="id", gt=0)],
@@ -88,7 +93,14 @@ async def read_post(
     return post
 
 
-@router.patch("/{id}", response_model=PostOut)
+@router.patch(
+    "/{id}",
+    response_model=PostOut,
+    responses={
+        403: {"model": ErrorResponse, "description": "Permission denied"},
+        404: {"model": ErrorResponse, "description": "Post not found"},
+    },
+)
 async def update_post(
     session: SessionDep,
     current_user: CurrentUser,
@@ -138,7 +150,14 @@ async def update_post(
     )
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        403: {"model": ErrorResponse, "description": "Permission denied"},
+        404: {"model": ErrorResponse, "description": "Post not found"},
+    },
+)
 async def delete_post(
     session: SessionDep,
     current_user: CurrentUser,

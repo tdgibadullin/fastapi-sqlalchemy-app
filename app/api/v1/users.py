@@ -11,6 +11,7 @@ from app.api.deps import CurrentUser
 from app.celery.tasks import send_welcome_email
 from app.core.db import SessionDep
 from app.core.security import verify_password
+from app.schemas.error import ErrorResponse
 from app.schemas.user import (
     UserCreate,
     UserOut,
@@ -26,7 +27,17 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.post("/", response_model=UserOut, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/",
+    response_model=UserOut,
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        409: {
+            "model": ErrorResponse,
+            "description": "Username or email already taken",
+        }
+    },
+)
 async def register_user(
     session: SessionDep,
     user_in: UserCreate,
@@ -44,19 +55,9 @@ async def register_user(
         Newly created user.
 
     Raises:
-        HTTPException: 409 Conflict if the email or username is already
+        HTTPException: 409 Conflict if the username or email is already
             taken by another user.
     """
-    user = await user_crud.get_user_by_email(
-        session=session,
-        email=user_in.email,
-    )
-    if user is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Email already taken",
-        )
-
     user = await user_crud.get_user_by_username(
         session=session,
         username=user_in.username,
@@ -65,6 +66,16 @@ async def register_user(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Username already taken",
+        )
+
+    user = await user_crud.get_user_by_email(
+        session=session,
+        email=user_in.email,
+    )
+    if user is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already taken",
         )
 
     user = await user_crud.create_user(session=session, user_in=user_in)
@@ -95,7 +106,16 @@ async def read_user_me(current_user: CurrentUser) -> User:
     return current_user
 
 
-@router.patch("/me", response_model=UserOut)
+@router.patch(
+    "/me",
+    response_model=UserOut,
+    responses={
+        409: {
+            "model": ErrorResponse,
+            "description": "Username or email already taken",
+        }
+    },
+)
 async def update_user_me(
     session: SessionDep,
     current_user: CurrentUser,
@@ -112,7 +132,7 @@ async def update_user_me(
         Updated user.
 
     Raises:
-        HTTPException: 409 Conflict if the new email or username is
+        HTTPException: 409 Conflict if the new username or email is
             already taken by another user.
     """
     if user_in.username and user_in.username != current_user.username:
@@ -144,7 +164,13 @@ async def update_user_me(
     )
 
 
-@router.patch("/me/password", status_code=status.HTTP_204_NO_CONTENT)
+@router.patch(
+    "/me/password",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        400: {"model": ErrorResponse, "description": "Invalid password data"}
+    },
+)
 async def update_password_me(
     session: SessionDep,
     current_user: CurrentUser,
