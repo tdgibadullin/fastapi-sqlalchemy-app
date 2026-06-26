@@ -160,12 +160,13 @@ This repository follows a layered, decoupled architecture designed for high main
 
 ### Prerequisites
 Before you begin, ensure you have the following installed:
+- [Git](https://git-scm.com/install/)
 - [Docker Desktop](https://docker.com/products/docker-desktop/) (or a drop-in replacement like [OrbStack](https://orbstack.dev/download))
 - [just](https://just.systems/man/en/installation.html) (command runner)
 
 ### Setup
 
-**1. Clone the repository and configure environment variables**
+**1. Clone the repository and configure the environment variables**
 
 ```bash
 git clone https://github.com/tdgibadullin/fastapi-sqlalchemy-app
@@ -176,13 +177,13 @@ cp .env.example .env
 
 **2. Spin up the infrastructure**
 
-Start the entire stack (PostgreSQL, Redis, Mailpit, Alembic, FastAPI, Celery, and Flower) in detached mode:
+Verify that Docker Desktop or a compatible alternative is running. Then, start the entire stack (PostgreSQL, Redis, Mailpit, Alembic, FastAPI, Celery, and Flower services) in detached mode:
 
 ```bash
 just up
 ```
 
-*Note:* The first run may take a few minutes as Docker downloads and builds the images.
+*Note:* The initial startup may take a few minutes as Docker downloads and builds the images.
 
 **3. Seed the database (optional but recommended)**
 
@@ -192,7 +193,7 @@ Populate the database with sample users and posts to facilitate local developmen
 just seed
 ```
 
-**4. Spin down the infrastructure**
+**4. Tear down the stack**
 
 When you are finished, stop and remove containers and networks:
 
